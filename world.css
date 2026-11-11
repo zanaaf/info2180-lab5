@@ -7,6 +7,10 @@ header{
     justify-content: center;
 }
 
+img{
+    height:100px;
+}
+
 body{
     background-color: #cad7dc;
     margin: 0;
@@ -30,6 +34,14 @@ main{
     align-items: center;
     flex-direction: column;
     padding-top:30px;
+}
+
+#searches{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
 }
 
 table{

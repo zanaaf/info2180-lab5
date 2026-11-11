@@ -5,17 +5,43 @@ $password = 'password123';
 $dbname = 'world';
 
 $country = $_GET['country'] ?? '';
+$type = $_GET['type'] ?? '';
 
 $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-$stmt = $conn->query("SELECT * FROM countries WHERE name LIKE '%$country%'");
+
+if ($type == "cities"){
+$stmt = $conn->prepare("SELECT cities.name, cities.district, cities.population FROM cities
+INNER JOIN countries ON cities.country_code = countries.code WHERE countries.name LIKE :country");
+
+$stmt->execute(['country' => "%$country%"]);
+
+}
+else{
+  $stmt = $conn->query("SELECT * FROM countries WHERE name LIKE '%$country%'");
+}
 
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-
-<ul>
   <table>
-    <thead>
+    <?php if ($type=='cities'):?>
+      <thead>
+      <tr>
+        <th>City Name</th>
+        <th>District</th>
+        <th>Population</th>
+      </tr>
+    </thead>
+      <tbody>
+      <?php foreach ($results as $row):?>
+        <tr>
+          <td><?=htmlspecialchars($row['name']);?></td>
+          <td><?=htmlspecialchars($row['district']);?></td>
+          <td><?=htmlspecialchars($row['population']);?></td>
+        </tr>
+    <?php endforeach;?>
+    <?php else:?>
+      <thead>
       <tr>
         <th>Country Name</th>
         <th>Continent</th>
@@ -32,6 +58,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <td><?=htmlspecialchars($row['head_of_state']);?></td>
         </tr>
     <?php endforeach;?>
+    <?php endif;?>
       </tbody>
     </table>
-</ul>
